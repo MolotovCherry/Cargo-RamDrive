@@ -20,7 +20,7 @@ You can edit the size of the ramdrive, volume label, and other options by editin
 
 If you do not desire to move your entire temp folder over to the ram drive, you may edit the script with either a hardcoded path, or to use a different env var
 
-\* Note: Arsenal Image Mounter is [made by the same author as imdisk], so it's pretty reputable
+\* Note: Arsenal Image Mounter is [made by the same author as imdisk](http://www.ltr-data.se/opencode.html/#ImDisk), so it's pretty reputable
 
 ### PowerShell Commands
 - `Clean-RustDir`: Clean out the tmp rust project target dir (e.g. `R:\Temp\rust\MyProject-1234\*`)
