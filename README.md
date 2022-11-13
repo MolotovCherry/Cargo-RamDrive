@@ -16,6 +16,8 @@ Download and install the driver for [arsenal image mounter](https://arsenalrecon
 - - Actions, start a program, set to `C:\Path\To\ramdisk.bat`
 - Extract the files in zip `aim_ll.zip` to the same folder as `ramdisk.bat` is in
 
+You can edit the size of the ramdrive, volume label, and other options by editing the command line in `ramdisk.bat`. By default, the script here says 3GB
+
 If you do not desire to move your entire temp folder over to the ram drive, you may edit the script with either a hardcoded path, or to use a different env var
 
 ### PowerShell Commands
