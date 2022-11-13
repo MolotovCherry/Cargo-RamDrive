@@ -5,6 +5,8 @@ I've always been frustrated at the amount of wear and tear that constant buildin
 ## Windows
 
 ### Installation
+Download and install the driver for [arsenal image mounter](https://arsenalrecon.com/downloads), then go to [this page](https://github.com/ArsenalRecon/Arsenal-Image-Mounter/tree/master/Command%20line%20applications) and download `aim_ll.zip`.
+
 - Download files under Windows directory.
 - - Place files in `Windows\Documents\PowerShell` in your `C:\<UserName>\Documents\PowerShell` folder
 - Set your `TMP` and `TEMP` env vars to the ram drive path you want (e.g. `R:\Temp`)
@@ -12,6 +14,7 @@ I've always been frustrated at the amount of wear and tear that constant buildin
 - - Run with highest privileges
 - - Trigger, runs at startup
 - - Actions, start a program, set to `C:\Path\To\ramdisk.bat`
+- Extract the files in zip `aim_ll.zip` to the same folder as `ramdisk.bat` is in
 
 If you do not desire to move your entire temp folder over to the ram drive, you may edit the script with either a hardcoded path, or to use a different env var
 
