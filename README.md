@@ -5,7 +5,7 @@ I've always been frustrated at the amount of wear and tear that constant buildin
 ## Windows
 
 ### Installation
-Download and install the driver for [arsenal image mounter](https://arsenalrecon.com/downloads), then go to [this page](https://github.com/ArsenalRecon/Arsenal-Image-Mounter/tree/master/Command%20line%20applications) and download `aim_ll.zip`. After you install the driver, you may delete the entire arsenal image mounter application (jsut remember that the driver will still be installed!)
+Download and install the driver for [arsenal image mounter](https://arsenalrecon.com/downloads), then go to [this page](https://github.com/ArsenalRecon/Arsenal-Image-Mounter/tree/master/Command%20line%20applications) and download `aim_ll.zip`. After you install the driver, you may delete the entire arsenal image mounter application (just remember that the driver will still be installed!)
 
 - Download files under Windows directory.
 - - Place files in `Windows\Documents\PowerShell` in your `C:\<UserName>\Documents\PowerShell` folder
