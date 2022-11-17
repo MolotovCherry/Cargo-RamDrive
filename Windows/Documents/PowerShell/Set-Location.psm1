@@ -4,7 +4,7 @@ function _Get-FNVHash {
     )
 
     # Initial prime and offset chosen for 32-bit output
-    # See https://en.wikipedia.org/wiki/Fowler–Noll–Vo_hash_function
+    # See https://en.wikipedia.org/wiki/Fowlerâ€“Nollâ€“Vo_hash_function
     [uint32]$FNVPrime = 16777619
     [uint32]$offset = 2166136261
 
@@ -26,7 +26,17 @@ function _Get-FNVHash {
 $rustBaseDir = "$env:TMP\rust"
 
 function _Get-RustTmpDir {
-    return "$rustBaseDir\$(Split-Path (Get-Location) -Leaf)-$(_Get-FNVHash (Get-Location))"
+    $currentDir = Get-Location
+    $leaf = Split-Path (Get-Location) -Leaf
+
+    # protect against the following
+    # C:\ == C:\ -> $rustBaseDir\C:\-1032342480
+    if ($currentDir.ToString() -eq $leaf) {
+        $driveLetter = $currentDir.Drive.ToString()
+        return "$rustBaseDir\$driveLetter-$(_Get-FNVHash $currentDir)"
+    }
+
+    return "$rustBaseDir\$leaf-$(_Get-FNVHash $currentDir)"
 }
 
 
