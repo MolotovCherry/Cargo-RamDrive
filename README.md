@@ -26,6 +26,6 @@ If you do not desire to move your entire temp folder over to the ram drive, you 
 Every time you cd to a different directory in PowerShell, the script will update `CARGO_BUILD_TARGET_DIR` to always point to a unique rust target folder in your temp folder for that specific project. Folders with the same project names *do not and will not* clash due to the unique id number placed at the end.
 
 ### PowerShell Commands
-- `Clean-RustDir`: Clean out the tmp rust project target dir (e.g. `R:\Temp\rust\MyProject-1234\*`)
+- `cargo clean`: Clean out the tmp rust project target dir (e.g. `R:\Temp\rust\MyProject-1234\*`)
 - `Clean-Rust`: Clean out the entire tmp rust folder (e.g. `R:\Temp\rust\*`)
 - `Rust-TargetDir`: Opens explorer to the rust target dir (e.g. `R:\Temp\rust\MyProject-1234\*`)
