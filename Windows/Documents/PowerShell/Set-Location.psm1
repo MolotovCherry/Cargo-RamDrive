@@ -154,10 +154,6 @@ function _Clean-Rust {
     }
 }
 
-function Clean-RustDir {
-    _Clean-Rust "$env:CARGO_BUILD_TARGET_DIR\*"
-}
-
 function Clean-Rust {
     _Clean-Rust "$rustBaseDir\*"
 }
