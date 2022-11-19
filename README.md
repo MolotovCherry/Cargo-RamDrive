@@ -21,6 +21,7 @@ You can edit the size of the ramdrive, volume label, and other options by editin
 If you do not desire to move your entire temp folder over to the ram drive, you may edit the script with either a hardcoded path, or to use a different env var
 
 \* Note: Arsenal Image Mounter is [made by the same author as imdisk](http://www.ltr-data.se/opencode.html/#ImDisk), so it's pretty reputable
+\*\* You can use any RAM software you want as the PowerShell scripts will work with anything, just as long as your software is fairly compatible (cargo will [fail to work](https://github.com/rust-lang/rust/issues/90780) on any ram disk implentations that [don't implement all fs functions](https://github.com/rust-lang/rust/pull/86447))
 
 ### How it Works
 Every time you cd to a different directory in PowerShell, the script will update `CARGO_BUILD_TARGET_DIR` to always point to a unique rust target folder in your temp folder for that specific project. Folders with the same project names *do not and will not* clash due to the unique id number placed at the end.
