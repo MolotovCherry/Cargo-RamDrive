@@ -28,8 +28,10 @@ There is a way to use this with VsCode/RustAnalyzer.
 
 - Open VsCode from an instance of powershell, where the variable is already set, and RustAnalyzer will properly use it.
 - If you like to use the "Open with Code" menu item like I do, do the followering:
-- - Open regedit and go to `Computer\HKEY_CLASSES_ROOT\Directory\Background\shell\VSCode\command`
-- - Replace it with  
+- - Open regedit and go to
+- - `Computer\HKEY_CLASSES_ROOT\Directory\Background\shell\VSCode\command`
+- - `Computer\HKEY_CLASSES_ROOT\Directory\shell\VSCode\command`
+- - Replace default value with 
 `pwsh -Command "Show-Console -Hide && Start-Process -FilePath """C:\Your\Path\To\Code.exe""" """%V"""" -Wait`
 
 ### How it Works
