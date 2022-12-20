@@ -29,7 +29,8 @@ There is a way to use this with VsCode/RustAnalyzer.
 - Open VsCode from an instance of powershell, where the variable is already set, and RustAnalyzer will properly use it.
 - If you like to use the "Open with Code" menu item like I do, do the followering:
 - - Open regedit and go to `Computer\HKEY_CLASSES_ROOT\Directory\Background\shell\VSCode\command`
-- - Replace it with `pwsh -Command "Show-Console -Hide && Start-Process -FilePath """C:\Your\Path\To\Code.exe""" """%V"""" -Wait`
+- - Replace it with  
+`pwsh -Command "Show-Console -Hide && Start-Process -FilePath """C:\Your\Path\To\Code.exe""" """%V"""" -Wait`
 
 ### How it Works
 Every time you cd to a different directory in PowerShell, the script will update `CARGO_BUILD_TARGET_DIR` to always point to a unique rust target folder in your temp folder for that specific project. Folders with the same project names *do not and will not* clash due to the unique id number placed at the end.
