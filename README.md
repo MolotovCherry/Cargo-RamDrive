@@ -23,14 +23,6 @@ If you do not desire to move your entire temp folder over to the ram drive, you 
 \* Note: Arsenal Image Mounter is [made by the same author as imdisk](http://www.ltr-data.se/opencode.html/#ImDisk), so it's pretty reputable  
 \*\* You can use any RAM software you want as the PowerShell scripts will work with anything, just as long as your software is fairly compatible (cargo will [fail to work](https://github.com/rust-lang/rust/issues/90780) on any ram disk implentations that [don't implement all fs functions](https://github.com/rust-lang/rust/pull/86447))
 
-### How it Works
-Every time you cd to a different directory in PowerShell, the script will update `CARGO_BUILD_TARGET_DIR` to always point to a unique rust target folder in your temp folder for that specific project. Folders with the same project names *do not and will not* clash due to the unique id number placed at the end.
-
-### PowerShell Commands
-- `cargo clean`: Clean out the tmp rust project target dir (e.g. `R:\Temp\rust\MyProject-1234\*`)
-- `Clean-Rust`: Clean out the entire tmp rust folder (e.g. `R:\Temp\rust\*`)
-- `Rust-TargetDir`: Opens explorer to the rust target dir (e.g. `R:\Temp\rust\MyProject-1234\*`)
-
 ### Using with VSCode and RustAnalyzer
 There is a way to use this with VsCode/RustAnalyzer.
 
@@ -38,3 +30,11 @@ There is a way to use this with VsCode/RustAnalyzer.
 - If you like to use the "Open with Code" menu item like I do, do the followering:
 - - Open regedit and go to `Computer\HKEY_CLASSES_ROOT\Directory\Background\shell\VSCode\command`
 - - Replace it with `pwsh -Command "& { & 'C:\Your\Path\To\Code.exe' '%V'}; exit $LASTEXITCODE"`
+
+### How it Works
+Every time you cd to a different directory in PowerShell, the script will update `CARGO_BUILD_TARGET_DIR` to always point to a unique rust target folder in your temp folder for that specific project. Folders with the same project names *do not and will not* clash due to the unique id number placed at the end.
+
+### PowerShell Commands
+- `cargo clean`: Clean out the tmp rust project target dir (e.g. `R:\Temp\rust\MyProject-1234\*`)
+- `Clean-Rust`: Clean out the entire tmp rust folder (e.g. `R:\Temp\rust\*`)
+- `Rust-TargetDir`: Opens explorer to the rust target dir (e.g. `R:\Temp\rust\MyProject-1234\*`)
