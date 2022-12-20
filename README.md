@@ -30,3 +30,11 @@ Every time you cd to a different directory in PowerShell, the script will update
 - `cargo clean`: Clean out the tmp rust project target dir (e.g. `R:\Temp\rust\MyProject-1234\*`)
 - `Clean-Rust`: Clean out the entire tmp rust folder (e.g. `R:\Temp\rust\*`)
 - `Rust-TargetDir`: Opens explorer to the rust target dir (e.g. `R:\Temp\rust\MyProject-1234\*`)
+
+### Using with VSCode and RustAnalyzer
+There is a way to use this with VsCode/RustAnalyzer.
+
+- Open VsCode from an instance of powershell, where the variable is already set, and RustAnalyzer will properly use it.
+- If you like to use the "Open with Code" menu item like I do, do the followering:
+- - Open regedit and go to `Computer\HKEY_CLASSES_ROOT\Directory\Background\shell\VSCode\command`
+- - Replace it with `pwsh -Command "& { & 'C:\Your\Path\To\Code.exe' '%V'}; exit $LASTEXITCODE"`
