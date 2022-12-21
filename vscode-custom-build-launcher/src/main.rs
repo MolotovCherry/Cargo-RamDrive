@@ -36,10 +36,6 @@ fn get_hashed_dir(dir: &str) -> String {
 
     let path = Path::new(dir);
 
-    if !path.try_exists().expect("error reading path") {
-        panic!("path not found");
-    }
-
     let base_name;
 
     // Properly handle a drive letter vs regular path
