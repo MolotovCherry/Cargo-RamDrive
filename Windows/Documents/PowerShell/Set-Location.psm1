@@ -1,46 +1,3 @@
-function Show-Console
-{
-    param ([Switch]$Show,[Switch]$Hide)
-    if (-not ("Console.Window" -as [type])) { 
-
-        Add-Type -Name Window -Namespace Console -MemberDefinition '
-        [DllImport("Kernel32.dll")]
-        public static extern IntPtr GetConsoleWindow();
-
-        [DllImport("user32.dll")]
-        public static extern bool ShowWindow(IntPtr hWnd, Int32 nCmdShow);
-        '
-    }
-
-    if ($Show)
-    {
-        $consolePtr = [Console.Window]::GetConsoleWindow()
-
-        # Hide = 0,
-        # ShowNormal = 1,
-        # ShowMinimized = 2,
-        # ShowMaximized = 3,
-        # Maximize = 3,
-        # ShowNormalNoActivate = 4,
-        # Show = 5,
-        # Minimize = 6,
-        # ShowMinNoActivate = 7,
-        # ShowNoActivate = 8,
-        # Restore = 9,
-        # ShowDefault = 10,
-        # ForceMinimized = 11
-
-        $null = [Console.Window]::ShowWindow($consolePtr, 5)
-    }
-
-    if ($Hide)
-    {
-        $consolePtr = [Console.Window]::GetConsoleWindow()
-        #0 hide
-        $null = [Console.Window]::ShowWindow($consolePtr, 0)
-    }
-}
-
 function _Get-FNVHash {
     param(
         [string]$InputString
@@ -61,7 +18,7 @@ function _Get-FNVHash {
     {
         # Apply XOR, multiply by prime and mod with max output size
         $hash = $hash -bxor $octet
-        $hash = $hash * $FNVPrime % [System.Math]::Pow(2,32)
+        $hash = ([decimal]$hash) * $FNVPrime % [System.Math]::Pow(2,32)
     }
     return $hash
 }
