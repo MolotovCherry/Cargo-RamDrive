@@ -20,19 +20,20 @@ You can edit the size of the ramdrive, volume label, and other options by editin
 
 If you do not desire to move your entire temp folder over to the ram drive, you may edit the script with either a hardcoded path, or to use a different env var
 
-\* Note: Arsenal Image Mounter is [made by the same author as imdisk](http://www.ltr-data.se/opencode.html/#ImDisk), so it's pretty reputable  
+\* Note: Arsenal Image Mounter is [made by the same author as imdisk](http://www.ltr-data.se/opencode.html/#ImDisk), so it's pretty reputable
 \*\* You can use any RAM software you want as the PowerShell scripts will work with anything, just as long as your software is fairly compatible (cargo will [fail to work](https://github.com/rust-lang/rust/issues/90780) on any ram disk implentations that [don't implement all fs functions](https://github.com/rust-lang/rust/pull/86447))
 
 ### Using with VSCode and RustAnalyzer
 There is a way to use this with VsCode/RustAnalyzer.
 
 - Open VsCode from an instance of powershell, where the variable is already set, and RustAnalyzer will properly use it.
-- If you like to use the "Open with Code" menu item like I do, do the followering:
+- If you like to use the "Open with Code" menu item like I do, do the following:
+- - Download `vscode-custom-build-launcher.exe` from the releases tab (this is just a simple vscode launcher which sets the env vars)
 - - Open regedit and go to
 - - `Computer\HKEY_CLASSES_ROOT\Directory\Background\shell\VSCode\command`
 - - `Computer\HKEY_CLASSES_ROOT\Directory\shell\VSCode\command`
-- - Replace default value with 
-`pwsh -Command "Show-Console -Hide && Start-Process -FilePath """C:\Your\Path\To\Code.exe""" """%V"""" -Wait`
+- - Replace default value with
+`"C:\Your\Path\To\vscode-custom-build-launcher.exe" "%V"`
 
 ### How it Works
 Every time you cd to a different directory in PowerShell, the script will update `CARGO_BUILD_TARGET_DIR` to always point to a unique rust target folder in your temp folder for that specific project. Folders with the same project names *do not and will not* clash due to the unique id number placed at the end.
