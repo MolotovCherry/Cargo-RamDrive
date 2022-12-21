@@ -1,3 +1,6 @@
+// Hide the console window
+#![windows_subsystem = "windows"]
+
 #[cfg(not(target_os = "windows"))]
 compile_error!("This is unsupported on your OS");
 
@@ -101,7 +104,7 @@ fn main() {
     let build_dir = target_dir.join(&hashed_dir);
     let build_dir = build_dir.to_str().unwrap();
 
-    Command::new("code.cmd")
+    Command::new("code")
         .env("CARGO_BUILD_TARGET_DIR", build_dir)
         .arg(dir)
         .spawn()
