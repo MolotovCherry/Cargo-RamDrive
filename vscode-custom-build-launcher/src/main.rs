@@ -10,24 +10,107 @@ use std::path::Path;
 use getargs::{Opt, Options};
 use smallvec::SmallVec;
 
+use std::backtrace::Backtrace;
+use std::mem::ManuallyDrop;
 use std::process::Command;
 
-fn print_help() {
-    println!(
+use regex::Regex;
+
+use windows::{
+    core::PCWSTR,
+    Win32::UI::WindowsAndMessaging::{
+        MessageBoxW, MB_ICONERROR, MB_ICONINFORMATION, MESSAGEBOX_STYLE,
+    },
+};
+
+use std::panic;
+
+fn set_hook() {
+    panic::set_hook(Box::new(|v| {
+        let backtrace = Backtrace::force_capture();
+
+        let full_backtrace = backtrace.to_string();
+        let frames = &full_backtrace.split("\n").collect::<Vec<_>>()[22..];
+
+        let mut short_backtrace = String::new();
+        let re = Regex::new(r"[0-9]+: ").unwrap();
+        for frame in frames {
+            let result = re.replace(frame, "-> ");
+            short_backtrace.push_str(&format!("\n{result}"));
+        }
+
+        let message = format!("{}\n{}", v.to_string(), short_backtrace);
+
+        display_popup("We panicked :(", &message, MessageBoxIcon::Error);
+    }));
+}
+
+fn display_help() {
+    display_popup(
+        "Usage",
         r"Usage: vscode-custom-build-launcher [OPTIONS] <DIR>
 
-This will launch VsCode with the CARGO_BUILD_TARGET_DIR env var set to the input directory.
-By default, it will use TMP to calculate the path to the custom build directory, but you can
-change this below with a flag
+This will launch VsCode with the CARGO_BUILD_TARGET_DIR env var set to the input directory. By default, it will use TMP to calculate the path to the custom build directory, but you can change this below with a flag
 
 Options:
-  -h, --help         print this help
-  -t, --target <VAL> custom target build directory
+  -h, --help
+      print this help
+  -t, --target <VAL>
+      custom target build directory
 
 Positional:
-  DIR                the initial directory used for setting the custom build directory.
-                     if this is omitted, it will start vscode without any specific directory"
+  DIR
+      the initial directory used for setting the custom build directory.
+      if this is omitted, it will start vscode without any specific directory",
+        MessageBoxIcon::Information,
     );
+}
+
+enum MessageBoxIcon {
+    Information,
+    Error,
+}
+
+impl From<MessageBoxIcon> for MESSAGEBOX_STYLE {
+    fn from(value: MessageBoxIcon) -> Self {
+        match value {
+            MessageBoxIcon::Information => MB_ICONINFORMATION,
+            MessageBoxIcon::Error => MB_ICONERROR,
+        }
+    }
+}
+
+struct PCWSTRWrapper(ManuallyDrop<Vec<u16>>);
+
+impl From<&PCWSTRWrapper> for PCWSTR {
+    fn from(value: &PCWSTRWrapper) -> Self {
+        PCWSTR(value.0.as_ptr())
+    }
+}
+
+trait EncodeUtf16 {
+    fn encode_pcwstr(&self) -> PCWSTRWrapper;
+}
+
+impl EncodeUtf16 for &str {
+    fn encode_pcwstr(&self) -> PCWSTRWrapper {
+        let mut text = ManuallyDrop::new(self.encode_utf16().collect::<Vec<_>>());
+        text.push(0);
+
+        PCWSTRWrapper(text)
+    }
+}
+
+fn display_popup(title: &str, message: &str, icon: MessageBoxIcon) {
+    let title = title.encode_pcwstr();
+    let message = message.encode_pcwstr();
+
+    unsafe {
+        MessageBoxW(None, &message, &title, icon.into());
+    }
+
+    ManuallyDrop::into_inner(message.0);
+    ManuallyDrop::into_inner(title.0);
 }
 
 fn get_hashed_dir(dir: &str) -> String {
@@ -76,6 +159,8 @@ fn get_hashed_dir(dir: &str) -> String {
 }
 
 fn main() {
+    set_hook();
+
     let args = env::args().skip(1).collect::<SmallVec<[_; 4]>>();
     let args_iter = args.iter().map(|i| &**i);
 
@@ -87,7 +172,7 @@ fn main() {
     while let Some(opt) = opts.next_opt().expect("argument parsing error") {
         match opt {
             Opt::Short('h') | Opt::Long("help") => {
-                print_help();
+                display_help();
                 return;
             }
 
@@ -95,7 +180,11 @@ fn main() {
                 let val = opts.value_opt();
 
                 if let None = val {
-                    eprint!("Target requires a value");
+                    display_popup(
+                        "Arg Error",
+                        "Target requires a value",
+                        MessageBoxIcon::Error,
+                    );
                     return;
                 }
 
