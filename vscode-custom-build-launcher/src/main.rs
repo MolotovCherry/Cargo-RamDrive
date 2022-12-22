@@ -10,11 +10,11 @@ use std::path::Path;
 use getargs::{Opt, Options};
 use smallvec::SmallVec;
 
-use std::backtrace::Backtrace;
+//use std::backtrace::Backtrace;
 use std::mem::ManuallyDrop;
 use std::process::Command;
 
-use regex::Regex;
+//use regex::Regex;
 
 use windows::{
     core::PCWSTR,
@@ -27,21 +27,21 @@ use std::panic;
 
 fn set_hook() {
     panic::set_hook(Box::new(|v| {
-        let backtrace = Backtrace::force_capture();
+        // let backtrace = Backtrace::force_capture();
 
-        let full_backtrace = backtrace.to_string();
-        let frames = &full_backtrace.split("\n").collect::<Vec<_>>()[22..];
+        // let full_backtrace = backtrace.to_string();
+        // let frames = &full_backtrace.split("\n").collect::<Vec<_>>()[22..];
 
-        let mut short_backtrace = String::new();
-        let re = Regex::new(r"[0-9]+: ").unwrap();
-        for frame in frames {
-            let result = re.replace(frame, "-> ");
-            short_backtrace.push_str(&format!("\n{result}"));
-        }
+        // let mut short_backtrace = String::new();
+        // let re = Regex::new(r"[0-9]+: ").unwrap();
+        // for frame in frames {
+        //     let result = re.replace(frame, "-> ");
+        //     short_backtrace.push_str(&format!("\n{result}"));
+        // }
 
-        let message = format!("{}\n{}", v.to_string(), short_backtrace);
+        // let message = format!("{}\n{}", v.to_string(), short_backtrace);
 
-        display_popup("We panicked :(", &message, MessageBoxIcon::Error);
+        display_popup("We panicked :(", &v.to_string(), MessageBoxIcon::Error);
     }));
 }
 
