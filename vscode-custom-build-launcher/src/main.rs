@@ -10,11 +10,11 @@ use std::path::Path;
 use getargs::{Opt, Options};
 use smallvec::SmallVec;
 
-//use std::backtrace::Backtrace;
+#[cfg(debug_assertions)]
+use {regex::Regex, std::backtrace::Backtrace};
+
 use std::mem::ManuallyDrop;
 use std::process::Command;
-
-//use regex::Regex;
 
 use windows::{
     core::PCWSTR,
@@ -27,20 +27,77 @@ use std::panic;
 
 fn set_hook() {
     panic::set_hook(Box::new(|v| {
-        // let backtrace = Backtrace::force_capture();
+        #[cfg(debug_assertions)]
+        {
+            let backtrace = Backtrace::force_capture();
 
-        // let full_backtrace = backtrace.to_string();
-        // let frames = &full_backtrace.split("\n").collect::<Vec<_>>()[22..];
+            let full_backtrace = backtrace.to_string();
+            let raw_frames = full_backtrace.split("\n").collect::<Vec<_>>();
 
-        // let mut short_backtrace = String::new();
-        // let re = Regex::new(r"[0-9]+: ").unwrap();
-        // for frame in frames {
-        //     let result = re.replace(frame, "-> ");
-        //     short_backtrace.push_str(&format!("\n{result}"));
-        // }
+            let mut frames = vec![];
+            for chunk_frames in raw_frames.chunks(2) {
+                let main_frame = chunk_frames.get(0);
+                let sub_frame = chunk_frames.get(1);
 
-        // let message = format!("{}\n{}", v.to_string(), short_backtrace);
+                if main_frame.is_some() && sub_frame.is_some() {
+                    let main_frame = *main_frame.unwrap();
+                    let sub_frame = *sub_frame.unwrap();
 
+                    if sub_frame.trim().starts_with("at") {
+                        frames.push(format!("{main_frame}\n{sub_frame}"));
+                    } else if main_frame.trim().starts_with("at") {
+                        frames
+                            .last_mut()
+                            .unwrap()
+                            .push_str(&format!("\n{main_frame}"));
+                        frames.push(sub_frame.to_string());
+                    } else {
+                        frames.push(main_frame.to_string());
+                        if !sub_frame.trim().is_empty() {
+                            frames.push(sub_frame.to_string());
+                        }
+                    }
+                } else {
+                    let main_frame = main_frame.unwrap();
+                    if !main_frame.trim().is_empty() {
+                        // end of array
+                        frames.push(main_frame.to_string());
+                    }
+                }
+            }
+
+            let re = Regex::new(r"[0-9]+: ").unwrap();
+            let mut capture = false;
+            let frames = frames
+                .into_iter()
+                // filter out all non-short backtraces
+                .filter(|frame| {
+                    if frame.contains("__rust_end_short_backtrace") {
+                        capture = true;
+                        // skip this current frame
+                        return false;
+                    }
+
+                    if frame.contains("__rust_begin_short_backtrace") {
+                        // skip this frame and all following frames
+                        capture = false;
+                    }
+
+                    capture
+                })
+                .skip(2)
+                .enumerate()
+                .map(|(i, frame)| re.replace(&frame, format!("{i}: ")).into_owned())
+                .collect::<Vec<_>>();
+
+            display_popup(
+                "We panicked :(",
+                &format!("{}\n\nstack backtrace:\n{}", v, frames.join("\n")),
+                MessageBoxIcon::Error,
+            );
+        }
+
+        #[cfg(not(debug_assertions))]
         display_popup("We panicked :(", &v.to_string(), MessageBoxIcon::Error);
     }));
 }
