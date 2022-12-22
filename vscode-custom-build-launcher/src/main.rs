@@ -56,7 +56,10 @@ Options:
   -h, --help
       print this help
   -t, --target <VAL>
-      custom target build directory
+      custom target build directory (instead of TMP)
+  -o, --only-build-target
+      when specifying DIR, only set CARGO_BUILD_TARGET_DIR;
+      do not open the directory in vscode
 
 Positional:
   DIR
@@ -169,6 +172,8 @@ fn main() {
     // the base directory we will use. we will be creating a custom build directory inside this one
     let mut target_dir = Path::new(&env::var("TMP").expect("Missing the TMP env var")).join("rust");
 
+    let mut open_vscode_dir = true;
+
     while let Some(opt) = opts.next_opt().expect("argument parsing error") {
         match opt {
             Opt::Short('h') | Opt::Long("help") => {
@@ -191,6 +196,11 @@ fn main() {
                 target_dir = Path::new(&val.unwrap().to_string()).to_path_buf();
             }
 
+            // if using dir option, don't send the target directory to vscode, only set the build target instead
+            Opt::Short('o') | Opt::Long("only-build-target") => {
+                open_vscode_dir = false;
+            }
+
             _ => (),
         }
     }
@@ -207,7 +217,11 @@ fn main() {
         let build_dir = target_dir.join(&hashed_dir);
         let build_dir = build_dir.to_str().unwrap();
 
-        command.env("CARGO_BUILD_TARGET_DIR", build_dir).arg(dir);
+        command.env("CARGO_BUILD_TARGET_DIR", build_dir);
+
+        if open_vscode_dir {
+            command.arg(dir);
+        }
     }
 
     command.spawn().expect("Failed to launch VsCode");
