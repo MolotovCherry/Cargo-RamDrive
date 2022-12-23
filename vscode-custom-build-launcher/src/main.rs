@@ -140,37 +140,58 @@ impl From<MessageBoxIcon> for MESSAGEBOX_STYLE {
     }
 }
 
-struct PCWSTRWrapper(ManuallyDrop<Vec<u16>>);
+struct PCWSTRWrapper {
+    text: PCWSTR,
+    ptr: *mut u16,
+    len: usize,
+    cap: usize,
+}
 
-impl From<&PCWSTRWrapper> for PCWSTR {
-    fn from(value: &PCWSTRWrapper) -> Self {
-        PCWSTR(value.0.as_ptr())
+impl std::ops::Deref for PCWSTRWrapper {
+    type Target = PCWSTR;
+
+    fn deref(&self) -> &Self::Target {
+        &self.text
     }
 }
 
-trait EncodeUtf16 {
-    fn encode_pcwstr(&self) -> PCWSTRWrapper;
+trait ToPCWSTRWrapper {
+    fn to_pcwstr(&self) -> PCWSTRWrapper;
 }
 
-impl EncodeUtf16 for &str {
-    fn encode_pcwstr(&self) -> PCWSTRWrapper {
+impl ToPCWSTRWrapper for &str {
+    fn to_pcwstr(&self) -> PCWSTRWrapper {
+        // do not drop when scope ends
         let mut text = ManuallyDrop::new(self.encode_utf16().collect::<Vec<_>>());
         text.push(0);
 
-        PCWSTRWrapper(text)
+        let (ptr, len, cap) = (text.as_mut_ptr(), text.len(), text.capacity());
+
+        PCWSTRWrapper {
+            text: PCWSTR::from_raw(ptr),
+            ptr,
+            len,
+            cap,
+        }
+    }
+}
+
+impl Drop for PCWSTRWrapper {
+    fn drop(&mut self) {
+        unsafe {
+            // this will auto drop at end of scope
+            Vec::from_raw_parts(self.ptr, self.len, self.cap);
+        }
     }
 }
 
 fn display_popup(title: &str, message: &str, icon: MessageBoxIcon) {
-    let title = title.encode_pcwstr();
-    let message = message.encode_pcwstr();
+    let title = title.to_pcwstr();
+    let message = message.to_pcwstr();
 
     unsafe {
-        MessageBoxW(None, &message, &title, icon.into());
+        MessageBoxW(None, *message, *title, icon.into());
     }
-
-    ManuallyDrop::into_inner(message.0);
-    ManuallyDrop::into_inner(title.0);
 }
 
 fn get_hashed_dir(dir: &str) -> String {
