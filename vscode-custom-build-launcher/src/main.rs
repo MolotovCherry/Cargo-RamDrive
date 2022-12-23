@@ -13,7 +13,6 @@ use smallvec::SmallVec;
 #[cfg(debug_assertions)]
 use {regex::Regex, std::backtrace::Backtrace};
 
-use std::mem::ManuallyDrop;
 use std::process::Command;
 
 use windows::{
@@ -142,9 +141,9 @@ impl From<MessageBoxIcon> for MESSAGEBOX_STYLE {
 
 struct PCWSTRWrapper {
     text: PCWSTR,
-    ptr: *mut u16,
-    len: usize,
-    cap: usize,
+    // this is here to allow it to get dropped on its own
+    #[allow(unused)]
+    _container: Vec<u16>,
 }
 
 impl std::ops::Deref for PCWSTRWrapper {
@@ -161,26 +160,13 @@ trait ToPCWSTRWrapper {
 
 impl ToPCWSTRWrapper for &str {
     fn to_pcwstr(&self) -> PCWSTRWrapper {
-        // do not drop when scope ends
-        let mut text = ManuallyDrop::new(self.encode_utf16().collect::<Vec<_>>());
+        // do not drop when scope ends, by moving it into struct
+        let mut text = self.encode_utf16().collect::<Vec<_>>();
         text.push(0);
 
-        let (ptr, len, cap) = (text.as_mut_ptr(), text.len(), text.capacity());
-
         PCWSTRWrapper {
-            text: PCWSTR::from_raw(ptr),
-            ptr,
-            len,
-            cap,
-        }
-    }
-}
-
-impl Drop for PCWSTRWrapper {
-    fn drop(&mut self) {
-        unsafe {
-            // this will auto drop at end of scope
-            Vec::from_raw_parts(self.ptr, self.len, self.cap);
+            text: PCWSTR::from_raw(text.as_ptr()),
+            _container: text,
         }
     }
 }
