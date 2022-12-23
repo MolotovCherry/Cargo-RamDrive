@@ -16,7 +16,7 @@ use {regex::Regex, std::backtrace::Backtrace};
 use std::process::Command;
 
 use windows::{
-    core::PCWSTR,
+    core::{HSTRING, PCWSTR},
     Win32::UI::WindowsAndMessaging::{
         MessageBoxW, MB_ICONERROR, MB_ICONINFORMATION, MESSAGEBOX_STYLE,
     },
@@ -139,44 +139,17 @@ impl From<MessageBoxIcon> for MESSAGEBOX_STYLE {
     }
 }
 
-struct PCWSTRWrapper {
-    text: PCWSTR,
-    // this is here to allow it to get dropped on its own
-    #[allow(unused)]
-    _container: Vec<u16>,
-}
-
-impl std::ops::Deref for PCWSTRWrapper {
-    type Target = PCWSTR;
-
-    fn deref(&self) -> &Self::Target {
-        &self.text
-    }
-}
-
-trait ToPCWSTRWrapper {
-    fn to_pcwstr(&self) -> PCWSTRWrapper;
-}
-
-impl ToPCWSTRWrapper for &str {
-    fn to_pcwstr(&self) -> PCWSTRWrapper {
-        // do not drop when scope ends, by moving it into struct
-        let mut text = self.encode_utf16().collect::<Vec<_>>();
-        text.push(0);
-
-        PCWSTRWrapper {
-            text: PCWSTR::from_raw(text.as_ptr()),
-            _container: text,
-        }
-    }
-}
-
 fn display_popup(title: &str, message: &str, icon: MessageBoxIcon) {
-    let title = title.to_pcwstr();
-    let message = message.to_pcwstr();
+    // these must be explicitly assigned, otherwise they will drop memory too fast
+    // before it can be read, and cause corruption and UB
+    let h_title = HSTRING::from(title);
+    let h_message = HSTRING::from(message);
+
+    let title = PCWSTR::from_raw(h_title.as_ptr());
+    let message = PCWSTR::from_raw(h_message.as_ptr());
 
     unsafe {
-        MessageBoxW(None, *message, *title, icon.into());
+        MessageBoxW(None, message, title, icon.into());
     }
 }
 
