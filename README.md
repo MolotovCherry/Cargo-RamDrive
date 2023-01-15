@@ -31,7 +31,7 @@ There is a way to use this with VsCode/RustAnalyzer.
 - - Download `vscode-custom-build-launcher.exe` from the releases tab (this is just a simple vscode launcher which sets the env vars)
 - - Place it somewhere and put that location in PATH
 - Download the reg files under `Windows`, change the user path in `install.reg` to your username (make sure to double check the whole path for the icon!)
-- - Run `install.reg` and `delete-vscode-context-menu.reg` (this will delete the default VsCode "open with" entry; don't worry, it gets re-added every time you update. This is why it's a separate file)
+- - Run `install.reg` and `delete-vscode-context-menu.reg` (this will delete the default VsCode "open with" entry; don't worry, it gets re-added every time you update. This is why it's a separate file). If you see double entries later after an update/install, just re-run the `delete-vscode-context-menu.reg` file
 - If you want to uninstall later on, just run `unininstall.reg`
 
 
