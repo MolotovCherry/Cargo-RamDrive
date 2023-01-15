@@ -35,7 +35,7 @@ There is a way to use this with VsCode/RustAnalyzer.
 - If you want to uninstall later on, just run `unininstall.reg`
 
 
-Note: You may need to add the location where `code.exe` is located to your `PATH`, such as `C:\Users\USERNAME\AppData\Local\Programs\Microsoft VS Code`. Also, VsCode updates seem to reset these keys.
+Note: You may need to add the location where `code.exe` is located to your `PATH`, such as `C:\Users\USERNAME\AppData\Local\Programs\Microsoft VS Code`. Also, VsCode updates seem to re-add the `open with` registry keys, which is why `delete-vscode-context-menu.reg` is separate (for ease)
 
 ### How it Works
 Every time you cd to a different directory in PowerShell, the script will update `CARGO_BUILD_TARGET_DIR` to always point to a unique rust target folder in your temp folder for that specific project. Folders with the same project names *do not and will not* clash due to the unique id number placed at the end.
