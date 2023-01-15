@@ -31,11 +31,11 @@ There is a way to use this with VsCode/RustAnalyzer.
 - - Download `vscode-custom-build-launcher.exe` from the releases tab (this is just a simple vscode launcher which sets the env vars)
 - - Place it somewhere and put that location in PATH
 - Download the reg files under `Windows`, change the user path in `install.reg` to your username (make sure to double check the whole path for the icon!)
-- - Run `install.reg` and `delete-vscode-context-menu.reg` (this will delete the default VsCode "open with" entry; don't worry, it gets re-added every time you update. This is why it's a separate file). If you see double entries later after an update/install, just re-run the `delete-vscode-context-menu.reg` file
+- - Run `install.reg` and `delete-vscode-context-menu.reg` (this will delete the default VsCode "open with" entry). If you see double entries later after an update/install, just re-run the `delete-vscode-context-menu.reg` file
 - If you want to uninstall later on, just run `unininstall.reg`
 
 
-Note: You may need to add the location where `code.exe` is located to your `PATH`, such as `C:\Users\USERNAME\AppData\Local\Programs\Microsoft VS Code`. Also, VsCode updates seem to re-add the `open with` registry keys, which is why `delete-vscode-context-menu.reg` is separate (for ease)
+Note: You may need to add the location where `code.exe` is located to your `PATH`, such as `C:\Users\USERNAME\AppData\Local\Programs\Microsoft VS Code`. Also, VsCode updates re-add the `open with` registry keys, which is why `delete-vscode-context-menu.reg` is separate (for ease)
 
 ### How it Works
 Every time you cd to a different directory in PowerShell, the script will update `CARGO_BUILD_TARGET_DIR` to always point to a unique rust target folder in your temp folder for that specific project. Folders with the same project names *do not and will not* clash due to the unique id number placed at the end.
