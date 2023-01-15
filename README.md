@@ -33,6 +33,7 @@ There is a way to use this with VsCode/RustAnalyzer.
 - Download the reg files under `Windows`, change the user path in `install.reg` to your username (make sure to double check the whole path for the icon!)
 - - Run `install.reg` and `delete-vscode-context-menu.reg` (this will delete the default VsCode "open with" entry). If you see double entries later after an update/install, just re-run the `delete-vscode-context-menu.reg` file
 - If you want to uninstall later on, just run `unininstall.reg`
+- You can also change your shortcuts to use the launcher like so `C:\path\to\vscode-custom-build-launcher.exe -o "C:\Scratch"`. For more info on the flags, just type `--help` or look at the source code
 
 
 Note: You may need to add the location where `code.exe` is located to your `PATH`, such as `C:\Users\USERNAME\AppData\Local\Programs\Microsoft VS Code`. Also, VsCode updates re-add the `open with` registry keys, which is why `delete-vscode-context-menu.reg` is separate (for ease)
