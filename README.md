@@ -35,7 +35,7 @@ There is a way to use this with VsCode/RustAnalyzer.
 - If you want to uninstall later on, just run `unininstall.reg`
 - You can also change your shortcuts to use the launcher like so  
 `C:\path\to\vscode-custom-build-launcher.exe -o "C:\Scratch"`  
-For more info on the flags, just type `--help` or look at the source code
+For more info on the flags, just type `--help` or look at the source code (note that this sets a static build dir, so if you open multiple instances of vscode, they'll use the same build dir, which is probably not what you want to happen)
 
 
 Note: You may need to add the location where `code.exe` is located to your `PATH`, such as `C:\Users\USERNAME\AppData\Local\Programs\Microsoft VS Code`. Also, VsCode updates re-add the `open with` registry keys, which is why `delete-vscode-context-menu.reg` is separate (for ease)
