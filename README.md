@@ -30,7 +30,7 @@ There is a way to use this with VsCode/RustAnalyzer.
 - If you like to use the "Open with Code" menu item like I do, do the following:
 - - Download `vscode-custom-build-launcher.exe` from the releases tab (this is just a simple vscode launcher which sets the env vars)
 - - Place it somewhere and put that location in PATH
-- Download the reg files under `Windows`, change the user path in `install.reg` to your username (make sure to double check the whole path for the icon!)
+- Download the reg files under `Windows`, change the paths in `install.reg` to your correct path (make sure to double check the whole path for the icon!)
 - - Run `install.reg` and `delete-vscode-context-menu.reg` (this will delete the default VsCode "open with" entry). If you see double entries later after an update/install, just re-run the `delete-vscode-context-menu.reg` file
 - If you want to uninstall later on, just run `uninstall.reg`
 - You can also change your shortcuts to use the launcher like so  
