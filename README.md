@@ -32,7 +32,7 @@ There is a way to use this with VsCode/RustAnalyzer.
 - - Place it somewhere and put that location in PATH
 - Download the reg files under `Windows`, change the user path in `install.reg` to your username (make sure to double check the whole path for the icon!)
 - - Run `install.reg` and `delete-vscode-context-menu.reg` (this will delete the default VsCode "open with" entry). If you see double entries later after an update/install, just re-run the `delete-vscode-context-menu.reg` file
-- If you want to uninstall later on, just run `unininstall.reg`
+- If you want to uninstall later on, just run `uninstall.reg`
 - You can also change your shortcuts to use the launcher like so  
 `C:\path\to\vscode-custom-build-launcher.exe -o "C:\Scratch"`  
 For more info on the flags, just type `--help` or look at the source code (note that this sets a static build dir, so if you open multiple instances of vscode, they'll use the same build dir, which is probably not what you want to happen)
